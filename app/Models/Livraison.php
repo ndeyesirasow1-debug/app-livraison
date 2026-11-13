@@ -16,4 +16,14 @@ class Livraison extends Model
         'date_livraison',
         'commentaire',
     ];
+
+    public function commande()
+    {
+        return $this->belongsTo(Commande::class);
+    }
+
+    public function livreur()
+    {
+        return $this->belongsTo(Livreur::class);
+    }
 }

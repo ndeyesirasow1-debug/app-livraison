@@ -16,4 +16,9 @@ class Paiement extends Model
         'reference_paiement',
         'date_paiement',
     ];
+
+    public function commande()
+    {
+        return $this->belongsTo(Commande::class);
+    }
 }

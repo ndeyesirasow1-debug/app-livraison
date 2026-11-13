@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Livraison;
-use App\Models\Livreur;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,29 +11,20 @@ class LivraisonController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Livraison::query();
+        $query = Livraison::with(['commande', 'livreur']);
 
-        if ($request->has('livreur_id')) {
-            $query->where('livreur_id', $request->livreur_id);
+        if ($request->user()->role === 'livreur') {
+            $query->where('livreur_id', optional($request->user()->livreur)->id);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $query->with(['commande', 'livreur'])->get(),
+            'data' => $query->orderByDesc('created_at')->get(),
         ]);
     }
 
     public function assign(Request $request, $id)
     {
-        $livraison = Livraison::find($id);
-
-        if (! $livraison) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Livraison introuvable',
-            ], 404);
-        }
-
         $validator = Validator::make($request->all(), [
             'livreur_id' => 'required|exists:livreurs,id',
         ]);
@@ -45,17 +36,17 @@ class LivraisonController extends Controller
             ], 422);
         }
 
-        $livreur = Livreur::find($request->livreur_id);
-
-        if ($livreur && $livreur->statut === 'inactif') {
+        $livraison = Livraison::find($id);
+        if (! $livraison) {
             return response()->json([
                 'success' => false,
-                'message' => 'Livreur indisponible',
-            ], 400);
+                'message' => 'Livraison introuvable',
+            ], 404);
         }
 
         $livraison->livreur_id = $request->livreur_id;
         $livraison->statut = 'en_cours';
+        $livraison->date_depart = now();
         $livraison->save();
 
         return response()->json([
@@ -67,15 +58,6 @@ class LivraisonController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $livraison = Livraison::find($id);
-
-        if (! $livraison) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Livraison introuvable',
-            ], 404);
-        }
-
         $validator = Validator::make($request->all(), [
             'statut' => 'required|in:en_attente,en_cours,livree,echec',
             'commentaire' => 'nullable|string',
@@ -88,6 +70,14 @@ class LivraisonController extends Controller
             ], 422);
         }
 
+        $livraison = Livraison::find($id);
+        if (! $livraison) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Livraison introuvable',
+            ], 404);
+        }
+
         $livraison->statut = $request->statut;
         $livraison->commentaire = $request->commentaire ?? $livraison->commentaire;
 
@@ -96,6 +86,16 @@ class LivraisonController extends Controller
         }
 
         $livraison->save();
+
+        if ($livraison->commande && $livraison->commande->client && $livraison->commande->client->user) {
+            Notification::create([
+                'user_id' => $livraison->commande->client->user->id,
+                'type' => 'livraison',
+                'titre' => 'Statut de livraison',
+                'message' => 'La livraison est maintenant : ' . $request->statut,
+                'lu' => false,
+            ]);
+        }
 
         return response()->json([
             'success' => true,

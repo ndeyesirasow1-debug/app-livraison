@@ -10,25 +10,25 @@ class ProduitController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Produit::query();
+        $query = Produit::with('categorie');
 
-        if ($request->has('search')) {
-            $query->where('nom', 'like', '%'.$request->search.'%');
+        if ($request->has('categorie_id')) {
+            $query->where('categorie_id', $request->categorie_id);
         }
 
-        if ($request->has('categorie')) {
-            $query->where('categorie_id', $request->categorie);
+        if ($request->has('statut')) {
+            $query->where('statut', $request->statut);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $query->paginate(15),
+            'data' => $query->get(),
         ]);
     }
 
     public function show($id)
     {
-        $produit = Produit::find($id);
+        $produit = Produit::with('categorie')->find($id);
 
         if (! $produit) {
             return response()->json([
@@ -46,7 +46,7 @@ class ProduitController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'categorie_id' => 'nullable|exists:categories,id',
+            'categorie_id' => 'required|exists:categories,id',
             'nom' => 'required|string|max:150',
             'description' => 'nullable|string',
             'prix' => 'required|numeric|min:0',
