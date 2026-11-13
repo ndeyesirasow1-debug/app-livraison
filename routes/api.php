@@ -3,11 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return response()->json([
-        'success' => true,
-        'message' => 'API de livraison active',
-        'version' => '1.0.0',
-    ]);
+    return response()->json(['success' => true, 'message' => 'API de livraison active', 'version' => '1.0.0']);
 });
 
 Route::post('/auth/register', [App\Http\Controllers\AuthController::class, 'register']);
@@ -27,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/commandes', [App\Http\Controllers\CommandeController::class, 'index']);
     Route::post('/commandes', [App\Http\Controllers\CommandeController::class, 'store']);
+    Route::get('/commandes/{commandeId}/suivi', [App\Http\Controllers\LivraisonController::class, 'track']);
 
     Route::get('/livraisons', [App\Http\Controllers\LivraisonController::class, 'index']);
     Route::put('/livraisons/{id}/assign', [App\Http\Controllers\LivraisonController::class, 'assign'])->middleware('role:admin,gestionnaire');
@@ -34,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/paiements', [App\Http\Controllers\PaiementController::class, 'index']);
     Route::post('/paiements', [App\Http\Controllers\PaiementController::class, 'store']);
+    Route::put('/paiements/{id}/confirm', [App\Http\Controllers\PaiementController::class, 'confirm'])->middleware('role:admin,gestionnaire');
 
     Route::get('/clients/me', [App\Http\Controllers\ClientController::class, 'me']);
     Route::post('/clients/profile', [App\Http\Controllers\ClientController::class, 'storeProfile']);
@@ -41,8 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/livreurs', [App\Http\Controllers\LivreurController::class, 'index']);
     Route::get('/livreurs/me', [App\Http\Controllers\LivreurController::class, 'me']);
     Route::post('/livreurs/profile', [App\Http\Controllers\LivreurController::class, 'storeProfile']);
-    Route::put('/livreurs/{id}/disponibilite', [App\Http\Controllers\LivreurController::class, 'setDisponibilite']);
-    Route::post('/livreurs/position', [App\Http\Controllers\LivreurController::class, 'updatePosition']);
+    Route::put('/livreurs/{id}/disponibilite', [App\Http\Controllers\LivreurController::class, 'setDisponibilite'])->middleware('role:admin,gestionnaire');
+    Route::post('/livreurs/position', [App\Http\Controllers\LivreurController::class, 'updatePosition'])->middleware('role:livreur');
 
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index']);
     Route::put('/notifications/{id}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead']);

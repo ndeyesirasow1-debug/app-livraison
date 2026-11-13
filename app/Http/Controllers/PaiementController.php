@@ -10,10 +10,16 @@ class PaiementController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Paiement::query();
+        $query = Paiement::with('commande');
 
-        if ($request->has('commande_id')) {
-            $query->where('commande_id', $request->commande_id);
+        if ($request->user()->role === 'client') {
+            $query->whereHas('commande.client', fn ($clientQuery) =>
+                $clientQuery->where('user_id', $request->user()->id)
+            );
+        }
+
+        if ($request->filled('commande_id')) {
+            $query->where('commande_id', $request->integer('commande_id'));
         }
 
         return response()->json([
@@ -22,13 +28,12 @@ class PaiementController extends Controller
         ]);
     }
 
+    /** Create a payment attempt. This does not claim that a provider charged the customer. */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'commande_id' => 'required|exists:commandes,id',
-            'montant' => 'required|numeric|min:0',
+            'commande_id' => 'required|integer|exists:commandes,id',
             'mode_paiement' => 'required|in:especes,mobile_money,carte,autre',
-            'reference_paiement' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -38,19 +43,65 @@ class PaiementController extends Controller
             ], 422);
         }
 
+        $commande = \App\Models\Commande::with('client')->findOrFail($request->integer('commande_id'));
+        $user = $request->user();
+
+        if ($user->role === 'client' && $commande->client?->user_id !== $user->id) {
+            return response()->json(['success' => false, 'message' => 'Commande introuvable'], 404);
+        }
+
+        if ($commande->paiement()->where('statut', 'paye')->exists()) {
+            return response()->json(['success' => false, 'message' => 'Cette commande est déjà payée'], 409);
+        }
+
         $paiement = Paiement::create([
-            'commande_id' => $request->commande_id,
-            'montant' => $request->montant,
+            'commande_id' => $commande->id,
+            'montant' => $commande->montant_total,
             'mode_paiement' => $request->mode_paiement,
-            'statut' => 'paye',
-            'reference_paiement' => $request->reference_paiement,
-            'date_paiement' => now(),
+            'statut' => 'en_attente',
+            'reference_paiement' => null,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Paiement enregistré',
+            'message' => 'Demande de paiement enregistrée. Le paiement reste en attente de confirmation.',
             'data' => $paiement,
+            'provider_configured' => false,
         ], 201);
+    }
+
+    /** Admin/manager calls this only after verifying payment with the actual provider or receipt. */
+    public function confirm(Request $request, int $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'reference_paiement' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $paiement = Paiement::find($id);
+        if (! $paiement) {
+            return response()->json(['success' => false, 'message' => 'Paiement introuvable'], 404);
+        }
+
+        if ($paiement->statut !== 'en_attente') {
+            return response()->json(['success' => false, 'message' => 'Ce paiement n’est plus en attente'], 409);
+        }
+
+        $paiement->statut = 'paye';
+        $paiement->reference_paiement = $request->input('reference_paiement');
+        $paiement->date_paiement = now();
+        $paiement->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Paiement confirmé après vérification',
+            'data' => $paiement,
+        ]);
     }
 }

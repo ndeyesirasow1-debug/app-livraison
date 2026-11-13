@@ -2,21 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Livreur extends Model
 {
+    use HasFactory;
+
     protected $table = 'livreurs';
 
-    protected $fillable = [
-        'user_id',
-        'nom',
-        'telephone',
-        'moyen_transport',
-        'statut',
-        'latitude',
-        'longitude',
-    ];
+    protected $fillable = ['user_id', 'nom', 'telephone', 'moyen_transport', 'statut', 'latitude', 'longitude'];
 
     public function user()
     {
