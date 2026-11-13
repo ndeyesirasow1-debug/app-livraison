@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'api_service.dart';
 
-void main() => runApp(const LivraisonApp());
+void main() => runApp(const CiraExpressApp());
 
-class LivraisonApp extends StatelessWidget {
-  const LivraisonApp({super.key});
+class CiraExpressApp extends StatelessWidget {
+  const CiraExpressApp({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'Livraison Express',
+        title: 'Cira Express',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF087F5B)),
@@ -126,7 +126,7 @@ class _AccueilPageState extends State<AccueilPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Livraison Express', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('Cira Express', style: TextStyle(fontWeight: FontWeight.bold)),
           Text('Connectée à Laravel', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
         ]),
         actions: [

@@ -1,6 +1,6 @@
-# Application de livraison
+# Cira Express
 
-Ce dépôt contient le socle de départ de l'application de livraison mobile.
+Ce dépôt contient le socle de départ de l’application de livraison Cira Express.
 
 Stack proposée :
 - Backend : Laravel

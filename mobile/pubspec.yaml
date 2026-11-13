@@ -1,5 +1,5 @@
-name: app_livraison_mobile
-description: Application mobile de livraison connectée à l’API Laravel.
+name: cira_express_mobile
+description: Application mobile Cira Express connectée à l’API Laravel.
 publish_to: 'none'
 version: 1.0.0+1
 

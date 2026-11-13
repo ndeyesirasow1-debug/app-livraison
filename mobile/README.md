@@ -1,6 +1,6 @@
 # Application mobile Flutter
 
-Ce dossier contient un premier prototype de l'application mobile côté client.
+Ce dossier contient le prototype mobile de l’application Cira Express.
 
 ## Ce qui fonctionne dans ce prototype
 - Affichage d'une liste de produits de démonstration
