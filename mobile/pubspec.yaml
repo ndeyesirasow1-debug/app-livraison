@@ -1,5 +1,5 @@
 name: app_livraison_mobile
-description: Application mobile de livraison - prototype client Flutter.
+description: Application mobile Flutter connectée à l’API Laravel.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
