@@ -10,20 +10,22 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $notifications = Notification::where('user_id', $request->user()->id)
-            ->orderByDesc('created_at')
-            ->get();
-
         return response()->json([
             'success' => true,
-            'data' => $notifications,
+            'data' => $request->user()->notifications()->orderByDesc('created_at')->get(),
         ]);
     }
 
     public function markAsRead(Request $request, $id)
     {
-        $notification = Notification::where('user_id', $request->user()->id)
-            ->findOrFail($id);
+        $notification = $request->user()->notifications()->find($id);
+
+        if (! $notification) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Notification introuvable',
+            ], 404);
+        }
 
         $notification->lu = true;
         $notification->save();
