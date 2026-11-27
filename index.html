@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ff5a1f" />
+    <meta name="description" content="Cira Express - Votre boutique en ligne" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="assets/cira-express-logo.jpg" type="image/jpeg" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Cira Express</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <button class="brand" id="home-button" aria-label="Accueil">
+          <img class="brand-mark" src="assets/cira-express-logo.jpg" alt="Cira Express" />
+          <span>Cira Express</span>
+        </button>
+        <button class="icon-button" id="cart-button" aria-label="Panier">
+          <span aria-hidden="true">🛒</span>
+          <span class="badge" id="cart-count">0</span>
+        </button>
+      </header>
+
+      <main id="main-content"></main>
+
+      <nav class="bottom-nav" aria-label="Navigation principale">
+        <button class="nav-item active" data-view="home">
+          <span aria-hidden="true">⌂</span>
+          <span>Accueil</span>
+        </button>
+        <button class="nav-item" data-view="search">
+          <span aria-hidden="true">⌕</span>
+          <span>Recherche</span>
+        </button>
+        <button class="nav-item" data-view="orders">
+          <span aria-hidden="true">▤</span>
+          <span>Commandes</span>
+        </button>
+        <button class="nav-item" data-view="profile">
+          <span aria-hidden="true">♙</span>
+          <span>Compte</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

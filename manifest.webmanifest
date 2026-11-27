@@ -1,0 +1,18 @@
+{
+  "name": "Cira Express",
+  "short_name": "Cira",
+  "description": "Votre boutique Cira Express",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f6f8",
+  "theme_color": "#ff5a1f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/cira-express-logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,52 +1,21 @@
 # Cira Express
 
-Ce dépôt contient le socle de départ de l’application de livraison Cira Express.
+Application e-commerce responsive installable sur Android.
 
-Stack proposée :
-- Backend : Laravel
-- Base de données : MySQL
-- Mobile : Flutter
-- Authentification : Laravel Sanctum
-- Notifications : Firebase Cloud Messaging
+## Démarrage
 
-## Structure du projet
-- app/ : modèles, contrôleurs, middleware
-- config/ : configuration Laravel
-- database/migrations/ : migrations SQL
-- routes/ : endpoints API
-- public/ : point d'entrée HTTP
+Depuis ce dossier, lancez :
 
-## Installation locale
-
-```bash
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan serve
+```powershell
+python -m http.server 8080
 ```
 
-## API principale
+Puis ouvrez `http://localhost:8080` dans Chrome Android ou Chrome desktop.
 
-- POST /api/auth/register
-- POST /api/auth/login
-- GET /api/auth/profile
-- GET /api/produits
-- POST /api/commandes
-- GET /api/commandes
-- PUT /api/livraisons/{id}/assign
-- PUT /api/livraisons/{id}/statut
-- POST /api/paiements
+## Installation sur Android
 
-## Rôles
-- admin
-- gestionnaire
-- client
-- livreur
+1. Ouvrez l’adresse hébergée sur HTTPS (ou `localhost` pour les tests).
+2. Ouvrez le menu Chrome.
+3. Sélectionnez « Ajouter à l’écran d’accueil ».
 
-## Prochaine étape
-
-1. installer les dépendances Laravel ;
-2. créer le fichier .env ;
-3. exécuter les migrations ;
-4. commencer le développement mobile Flutter.
+Le premier prototype comprend le catalogue, la recherche, les catégories, le panier, les commandes locales, le profil et un chat illustratif.
