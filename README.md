@@ -2,7 +2,7 @@
 
 Application e-commerce responsive installable sur Android.
 
-## Démarrage
+## Dém![alt text](image.png)arrage
 
 Depuis ce dossier, lancez :
 
@@ -19,3 +19,5 @@ Puis ouvrez `http://localhost:8080` dans Chrome Android ou Chrome desktop.
 3. Sélectionnez « Ajouter à l’écran d’accueil ».
 
 Le premier prototype comprend le catalogue, la recherche, les catégories, le panier, les commandes locales, le profil et un chat illustratif.
+
+Pour publier sur GitHub Pages, téléversez `index.html`, `styles.css`, `app.js`, `manifest.webmanifest`, `sw.js`, `icon.svg` et `cira-express-logo.jpg` à la racine du dépôt.

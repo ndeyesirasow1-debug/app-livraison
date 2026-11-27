@@ -1,4 +1,4 @@
-const CACHE_NAME = "cira-express-v2";
+const CACHE_NAME = "cira-express-v3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,7 +6,7 @@ const ASSETS = [
   "./app.js",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./assets/cira-express-logo.jpg"
+  "./cira-express-logo.jpg"
 ];
 
 self.addEventListener("install", (event) => {
